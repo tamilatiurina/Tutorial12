@@ -19,3 +19,7 @@ Tutorial11/bin/
 idea/
 ./db/
 ./extensions/
+./obj/
+/obj
+/obj/
+/.obj/
