@@ -9,7 +9,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef50ecc9-d4e8-4ceb-b613-4da2792c441f" name="Changes" comment="" />
+    <list default="true" id="ef50ecc9-d4e8-4ceb-b613-4da2792c441f" name="Changes" comment="gitignore updates">
+      <change beforePath="$PROJECT_DIR$/Tutorial11/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/.gitignore" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -21,10 +23,17 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/tamilatiurina/Tutorial11.git",
+    "accountId": "5b90e2a8-ba93-4a13-8e83-507aa0b3e713"
+  }
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -104,15 +113,36 @@
       <option name="presentableId" value="Default" />
       <updated>1748935499391</updated>
       <workItem from="1748935501539" duration="13805000" />
-      <workItem from="1749019659134" duration="15900000" />
+      <workItem from="1749019659134" duration="16460000" />
     </task>
+    <task id="LOCAL-00001" summary="Init">
+      <option name="closed" value="true" />
+      <created>1749058979317</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1749058979317</updated>
+    </task>
+    <task id="LOCAL-00002" summary="gitignore updates">
+      <option name="closed" value="true" />
+      <created>1749059159712</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1749059159712</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Init" />
+    <MESSAGE value="gitignore updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="gitignore updates" />
   </component>
 </project>
