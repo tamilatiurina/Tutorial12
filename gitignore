@@ -1,0 +1,30 @@
+# Default ignored files
+shelf/
+workspace.xml
+# Rider ignored files
+contentModel.xml
+projectSettingsUpdater.xml
+.idea.Tutorial11.iml
+modules.xml
+# Editor-based HTTP Client requests
+httpRequests/
+# Datasource local storage ignored files
+dataSources/
+dataSources.local.xml
+/.idea/
+appsettings.json
+appsettings.Development.json
+.idea/
+Tutorial11/bin/
+idea/
+./db/
+./extensions/
+./obj/
+/obj
+/obj/
+/.obj/
+Tutorial11/obj/
+Tutorial11/obj/Debug/
+**/obj/
+**/bin/
+Tutorial11.http
