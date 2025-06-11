@@ -14,9 +14,10 @@ public class Device
     
     public Dictionary<string, object> AdditionalProperties { get; set; } = new();
     
-    [NotMapped]
+    /*[NotMapped]
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string Type { get; set; }*/
+    [JsonPropertyName("typeId")]
     public int? DeviceTypeId { get; set; }
     public DeviceType DeviceType { get; set; }
     

@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Tutorial11.DTOs;
 using Tutorial11.Models;
-using Tutorial11.DAL;
+
 
 namespace Tutorial11.Helper.Middleware;
 
@@ -14,14 +14,13 @@ public class DeviceMiddleware
    private readonly RequestDelegate _next;
     private readonly ValidationConfig _validationConfig;
     private readonly ILogger<DeviceMiddleware> _logger;
-    private readonly DeviceContext _context;
 
-    public DeviceMiddleware(RequestDelegate next, ValidationConfig config, ILogger<DeviceMiddleware> logger, DeviceContext context)
+
+    public DeviceMiddleware(RequestDelegate next, ValidationConfig config, ILogger<DeviceMiddleware> logger)
     {
         _next = next;
         _validationConfig = config;
         _logger = logger;
-        _context = context;
     }
 
     public async Task Invoke(HttpContext context)
@@ -30,7 +29,7 @@ public class DeviceMiddleware
 
         try
         {
-            if (!context.Request.Path.StartsWithSegments("/api/devices", StringComparison.OrdinalIgnoreCase) ||
+            if (!context.Request.Path.StartsWithSegments("/api/Devices") ||
                 context.Request.Method == HttpMethods.Options ||
                 context.Request.Method == HttpMethods.Get)
             {
@@ -41,14 +40,10 @@ public class DeviceMiddleware
 
 
             context.Request.EnableBuffering();
-            
-            
+
             using var reader = new StreamReader(context.Request.Body, Encoding.UTF8,
                 detectEncodingFromByteOrderMarks: false, bufferSize: 1024, leaveOpen: true);
             var json = await reader.ReadToEndAsync();
-            
-            _logger.LogInformation("Raw JSON Body: {Body}", json);
-
             context.Request.Body.Position = 0;
 
             if (string.IsNullOrEmpty(json))
@@ -60,55 +55,49 @@ public class DeviceMiddleware
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var dto = JsonSerializer.Deserialize<CreateDeviceDto>(json, options);
 
-            if (dto == null || _validationConfig?.Validations == null)
+            if (dto == null)
             {
-                _logger.LogWarning("DTO is null or validation config is missing.");
+                 _logger.LogWarning("Deserialization of CreateDeviceDto failed.");
                 await _next(context);
                 return;
             }
 
-            var type = await _context.DeviceType
-                .Where(dt => dt.Id == dto.TypeId)
-                .Select(dt => dt.Name)
-                .FirstOrDefaultAsync();
-
-            _logger.LogInformation("Resolved type name for TypeId {TypeId} => {Type}", dto.TypeId, type);
-
-            if (string.IsNullOrWhiteSpace(type))
+            _logger.LogInformation("Deserialized DTO TypeId: {TypeId}", dto.TypeId);
+            
+            string deviceTypeName = dto.TypeId switch
             {
-                _logger.LogWarning("Could not resolve device type for validation.");
-                await _next(context);
-                return;
-            }
-
-            var deviceForValidation = new Device
-            {
-                IsEnabled = dto.IsEnabled,
-                AdditionalProperties = JsonSerializer.Deserialize<Dictionary<string, object>>(
-                    JsonSerializer.Serialize(dto.AdditionalProperties)) ?? new(),
-                Type = type
+                1 => "PC",
+                2 => "Smartwatch",
+                3 => "Embedded",
+                4 => "Monitor",
+                5 => "Printer",
+                _ => null
             };
 
-            if (deviceForValidation == null || _validationConfig?.Validations == null)
+            if (deviceTypeName == null)
             {
-                _logger.LogWarning("Device is null or validation config is missing.");
-                await _next(context);
+                _logger.LogWarning("Unknown Device TypeId: {TypeId}", dto.TypeId);
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsync("Unknown device type");
                 return;
             }
 
-            var matchingValidations = _validationConfig.Validations
-                .Where(v => v.Type == deviceForValidation.Type)
-                .Where(v => GetPropertyValue(deviceForValidation, v.PreRequestName)?.ToString().ToLower() ==
-                            v.PreRequestValue.ToLower());
 
-            foreach (var validation in matchingValidations)
-            {
+            var additionalProps = JsonSerializer.Deserialize<Dictionary<string, object>>(dto.AdditionalProperties.ToString()!);
+
+
+            var matchingValidations = _validationConfig.Validations
+                .Where(v => v.Type == deviceTypeName)
+                .Where(v => v.PreRequestName.Equals("isEnabled", StringComparison.OrdinalIgnoreCase) &&
+                    v.PreRequestValue.Equals(dto.IsEnabled.ToString(), StringComparison.OrdinalIgnoreCase));
+
+            foreach (var validation in matchingValidations) {
                 foreach (var rule in validation.Rules)
                 {
-                    if (!deviceForValidation.AdditionalProperties.TryGetValue(rule.ParamName, out var propValue))
+                    if (!additionalProps.TryGetValue(rule.ParamName, out var propValue))
                     {
-                        _logger.LogWarning("Missing required property '{Property}' for device type '{DeviceType}'", rule.ParamName, deviceForValidation.Type);
-                        context.Response.StatusCode = 400;
+                        _logger.LogWarning("Missing required property '{Property}' for device type '{DeviceType}'",
+                            rule.ParamName, deviceTypeName);
                         context.Response.StatusCode = 400;
                         await context.Response.WriteAsync($"Missing required property '{rule.ParamName}'");
                         return;
@@ -134,7 +123,9 @@ public class DeviceMiddleware
 
                     if (!isValid)
                     {
-                        _logger.LogWarning("Validation failed for '{Property}' with value '{Value}' on device type '{DeviceType}'", rule.ParamName, stringValue, deviceForValidation.Type);
+                        _logger.LogWarning(
+                            "Validation failed for '{Property}' with value '{Value}' on device type '{DeviceType}'",
+                            rule.ParamName, stringValue, deviceTypeName);
                         context.Response.StatusCode = 400;
                         await context.Response.WriteAsync(
                             $"Validation failed for '{rule.ParamName}' with value '{stringValue}'");
@@ -142,7 +133,7 @@ public class DeviceMiddleware
                     }
                 }
             }
-
+            
             await _next(context);
             _logger.LogInformation("DeviceMiddleware completed successfully");
         }

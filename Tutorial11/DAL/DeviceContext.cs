@@ -33,8 +33,5 @@ public class DeviceContext : DbContext
                     v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, (JsonSerializerOptions)null))
                 .HasColumnType("nvarchar(max)");
         });
-        
-        modelBuilder.Entity<Device>()
-            .Ignore(d => d.Type);
     }
 }
