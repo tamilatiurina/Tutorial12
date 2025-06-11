@@ -36,8 +36,7 @@ namespace Tutorial11.Controllers
                 .Select(a => new 
                 {
                     a.Id,
-                    a.Username,
-                    a.Password
+                    a.Username
                 })
                 .ToListAsync();
 
@@ -52,10 +51,10 @@ namespace Tutorial11.Controllers
         {
             var account = await _context.Account
                 .Where(a => a.Id == id)
-                .Select(a => new 
+                .Select(a => new
                 {
                     a.Username,
-                    a.Password
+                    role = a.Role.Name
                 })
                 .FirstOrDefaultAsync();
 
@@ -81,7 +80,7 @@ namespace Tutorial11.Controllers
                     return NotFound();
                 }
 
-                account.Username = updateAccount.Username;
+                account.Username = updateAccount.Login;
                 account.Password = updateAccount.Password;
 
                 _context.Account.Update(account);
@@ -113,22 +112,22 @@ namespace Tutorial11.Controllers
                 }
 
                 var roleExists = await _context.Role
-                    .AnyAsync(e => e.Name == newAccount.Role);
+                    .AnyAsync(e => e.Id == newAccount.RoleId);
 
                 if (!roleExists)
                 {
                     return BadRequest($"Role does not exist.");
                 }
 
-                Role role = await _context.Role
-                    .FirstOrDefaultAsync(r => r.Name == newAccount.Role);
+                //Role role = await _context.Role
+                  //  .FirstOrDefaultAsync(r => r.Id == newAccount.RoleId);
 
                 var account = new Account
                 {
                     Username = newAccount.Username,
                     Password = newAccount.Password,
                     EmployeeId = newAccount.EmployeeId,
-                    RoleId = role.Id
+                    RoleId = newAccount.RoleId
                 };
 
                 account.Password = _passwordHasher.HashPassword(account, newAccount.Password);

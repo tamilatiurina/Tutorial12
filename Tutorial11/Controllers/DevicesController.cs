@@ -45,6 +45,24 @@ namespace Tutorial11.Controllers
                 return Problem(detail: ex.Message, title: "Server error", instance: "api/devices");
             }
         }
+        
+        // GET: api/Devices/types
+        [HttpGet("types")]
+        public async Task<ActionResult<IEnumerable<Device>>> GetDeviceTypes()
+        {
+            try
+            {
+                var devices = await _context.DeviceType
+                    .Select(d => new { d.Id, d.Name })
+                    .ToListAsync();
+
+                return Ok(devices);
+            }
+            catch (Exception ex)
+            {
+                return Problem(detail: ex.Message, title: "Server error", instance: "api/devices/types");
+            }
+        }
 
         // GET: api/Devices/5 (Admin or assigned user)
         [HttpGet("{id}")]
@@ -108,10 +126,9 @@ namespace Tutorial11.Controllers
 
                 var result = new DeviceDto(
                     device.Name,
-                    device.DeviceType?.Name ?? "Unknown",
                     device.IsEnabled,
                     JsonSerializer.Deserialize<Dictionary<string, object>>(JsonSerializer.Serialize(device.AdditionalProperties)),
-                    currentEmployee
+                    device.DeviceType?.Name ?? "Unknown"
                 );
 
                 return Ok(result);
@@ -178,11 +195,11 @@ namespace Tutorial11.Controllers
                 }
 
                 var deviceType = await _context.DeviceType
-                    .FirstOrDefaultAsync(dt => dt.Name == deviceDto.Type, token);
+                    .FirstOrDefaultAsync(dt => dt.Id == deviceDto.TypeId, token);
 
                 if (deviceType == null)
                 {
-                    _logger.LogWarning("DeviceType '{DeviceType}' not found", deviceDto.Type);
+                    _logger.LogWarning("DeviceType '{DeviceType}' not found", deviceDto.TypeId);
                     return NotFound("DeviceType not found.");
                 }
 
@@ -216,11 +233,11 @@ namespace Tutorial11.Controllers
             try
             {
                 var deviceType = await _context.DeviceType
-                    .FirstOrDefaultAsync(dt => dt.Name == deviceDto.Type, token);
+                    .FirstOrDefaultAsync(dt => dt.Id == deviceDto.TypeId, token);
 
                 if (deviceType == null)
                 {
-                    _logger.LogWarning("DeviceType '{DeviceType}' not found", deviceDto.Type);
+                    _logger.LogWarning("DeviceType '{DeviceType}' not found", deviceDto.TypeId);
                     return NotFound("DeviceType not found.");
                 }
 

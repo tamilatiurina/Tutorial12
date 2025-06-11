@@ -27,7 +27,7 @@ namespace Tutorial11.Controllers
         [HttpPost]
         public async Task<IActionResult> Auth(LoginAccountDto loginAccount, CancellationToken cancellationToken)
         {
-            var foundUser = await _context.Account.Include(u => u.Role).FirstOrDefaultAsync(u => string.Equals(u.Username, loginAccount.Username), cancellationToken);
+            var foundUser = await _context.Account.Include(u => u.Role).FirstOrDefaultAsync(u => string.Equals(u.Username, loginAccount.Login), cancellationToken);
 
             if (foundUser == null)
             {

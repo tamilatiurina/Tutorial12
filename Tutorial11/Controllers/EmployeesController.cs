@@ -30,7 +30,7 @@ namespace Tutorial11.Controllers
             {
                 var shortInfoEmployees = _context.Employee
                     .Select(e => new ShortEmployeeDto(
-                        e.Id,
+                        e.Id, 
                         $"{e.Person.FirstName} {e.Person.MiddleName} {e.Person.LastName}"
                     ));
 
@@ -60,13 +60,10 @@ namespace Tutorial11.Controllers
                     return NotFound();
                 }
 
-                var result = new EmployeeDetailDto
+                var result = new EmployeeDetailDto2
                 {
-                    Salary = employee.Salary,
-                    HireDate = employee.HireDate,
                     Person = new PersonDto
                     {
-                        Id = employee.Person.Id,
                         PassportNumber = employee.Person.PassportNumber,
                         FirstName = employee.Person.FirstName,
                         MiddleName = employee.Person.MiddleName,
@@ -74,11 +71,9 @@ namespace Tutorial11.Controllers
                         PhoneNumber = employee.Person.PhoneNumber,
                         Email = employee.Person.Email
                     },
-                    Position = new PositionDto
-                    {
-                        Id = employee.Position.Id,
-                        Name = employee.Position.Name
-                    }
+                    Salary = employee.Salary,
+                    HireDate = employee.HireDate,
+                    Position = employee.Position.Name
                 };
 
                 return Ok(result);
@@ -122,8 +117,26 @@ namespace Tutorial11.Controllers
         // POST: api/Employees
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> PostEmployee(CreateEmployeeDto dto)
         {
+            var person = new Person
+            {
+                PassportNumber = dto.Person.PassportNumber,
+                FirstName = dto.Person.FirstName,
+                MiddleName = dto.Person.MiddleName,
+                LastName = dto.Person.LastName,
+                PhoneNumber = dto.Person.PhoneNumber,
+                Email = dto.Person.Email
+            };
+
+            var employee = new Employee
+            {
+                Person = person,
+                Salary = dto.Salary,
+                HireDate = DateTime.UtcNow,
+                PositionId = dto.PositionId
+            };
+
             _context.Employee.Add(employee);
             await _context.SaveChangesAsync();
 
