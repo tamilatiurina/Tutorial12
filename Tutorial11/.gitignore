@@ -25,3 +25,6 @@ idea/
 /.obj/
 Tutorial11/obj/
 Tutorial11/obj/Debug/
+**/obj/
+**/bin/
+Tutorial11.http

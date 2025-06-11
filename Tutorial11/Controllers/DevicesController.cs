@@ -108,7 +108,7 @@ namespace Tutorial11.Controllers
                     device.Name,
                     device.DeviceType?.Name ?? "Unknown",
                     device.IsEnabled,
-                    JsonSerializer.Deserialize<object>(device.AdditionalProperties),
+                    JsonSerializer.Deserialize<Dictionary<string, object>>(JsonSerializer.Serialize(device.AdditionalProperties)),
                     currentEmployee
                 );
 
@@ -170,7 +170,9 @@ namespace Tutorial11.Controllers
 
                 device.Name = deviceDto.Name;
                 device.IsEnabled = deviceDto.IsEnabled;
-                device.AdditionalProperties = JsonSerializer.Serialize(deviceDto.AdditionalProperties);
+                device.AdditionalProperties = JsonSerializer.Deserialize<Dictionary<string, object>>(
+                    JsonSerializer.Serialize(deviceDto.AdditionalProperties)
+                ) ?? new Dictionary<string, object>();
                 device.DeviceTypeId = deviceType.Id;
 
                 _context.Device.Update(device);
@@ -204,7 +206,9 @@ namespace Tutorial11.Controllers
                 {
                     Name = deviceDto.Name,
                     IsEnabled = deviceDto.IsEnabled,
-                    AdditionalProperties = JsonSerializer.Serialize(deviceDto.AdditionalProperties),
+                    AdditionalProperties = JsonSerializer.Deserialize<Dictionary<string, object>>(
+                        JsonSerializer.Serialize(deviceDto.AdditionalProperties)
+                    ) ?? new Dictionary<string, object>(),
                     DeviceTypeId = deviceType.Id
                 };
 

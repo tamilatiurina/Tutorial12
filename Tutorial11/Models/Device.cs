@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Tutorial11.Models;
 
@@ -10,8 +12,11 @@ public class Device
     
     public bool IsEnabled { get; set; }
     
-    public string AdditionalProperties { get; set; }
+    public Dictionary<string, object> AdditionalProperties { get; set; } = new();
     
+    [NotMapped]
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
     public int? DeviceTypeId { get; set; }
     public DeviceType DeviceType { get; set; }
     

@@ -9,8 +9,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef50ecc9-d4e8-4ceb-b613-4da2792c441f" name="Changes" comment="gitignore updates">
+    <list default="true" id="ef50ecc9-d4e8-4ceb-b613-4da2792c441f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Tutorial11/Helper/Middleware/DeviceMiddleware.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tutorial11/Helper/Middleware/Rule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tutorial11/Helper/Middleware/ValidationConfig.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tutorial11/Helper/Middleware/ValidationRule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tutorial11/validationRules.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Tutorial11/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Tutorial11/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tutorial11/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial11/Controllers/DevicesController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/Controllers/DevicesController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial11/DAL/DeviceContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/DAL/DeviceContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial11/Models/Device.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/Models/Device.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial11/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tutorial11/Tutorial11.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Tutorial11/Tutorial11.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,12 +34,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/tamilatiurina/Tutorial11.git",
-    "accountId": "5b90e2a8-ba93-4a13-8e83-507aa0b3e713"
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "tamilatiurina"
   }
 }]]></component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/tamilatiurina/Tutorial11.git&quot;,
+    &quot;accountId&quot;: &quot;5b90e2a8-ba93-4a13-8e83-507aa0b3e713&quot;
+  }
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -48,6 +65,7 @@
     ".NET Launch Settings Profile.Tutorial11: http.executor": "Run",
     ".NET Launch Settings Profile.Tutorial11: https.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "master",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -114,6 +132,7 @@
       <updated>1748935499391</updated>
       <workItem from="1748935501539" duration="13805000" />
       <workItem from="1749019659134" duration="16460000" />
+      <workItem from="1749549890407" duration="12185000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <option name="closed" value="true" />

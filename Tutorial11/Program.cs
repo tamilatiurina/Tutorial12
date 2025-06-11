@@ -1,9 +1,11 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Tutorial11.DAL;
 using Tutorial11.Helper.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Tutorial11.Helper.Middleware;
 using Tutorial11.Services.Token;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +45,26 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+var jsonText = File.ReadAllText("validationRules.json");
+Console.WriteLine("ValidationRules.json content:");
+Console.WriteLine(jsonText);
+
+var config = JsonSerializer.Deserialize<ValidationConfig>(jsonText, new JsonSerializerOptions
+{
+    PropertyNameCaseInsensitive = true
+});
+
+if (config == null || config.Validations == null)
+{
+    Console.WriteLine("Validation config or its Validations property is null");
+}
+else
+{
+    Console.WriteLine($"Loaded {config.Validations.Count} rules");
+}
+
+app.UseMiddleware<DeviceMiddleware>(config);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

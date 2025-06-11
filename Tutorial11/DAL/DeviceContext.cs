@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Tutorial11.Models;
 
@@ -23,5 +24,17 @@ public class DeviceContext : DbContext
         modelBuilder.Entity<Person>()
             .HasIndex(d => d.PassportNumber)
             .IsUnique();
+        
+        modelBuilder.Entity<Device>(entity =>
+        {
+            entity.Property(e => e.AdditionalProperties)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<Dictionary<string, object>>(v, (JsonSerializerOptions)null))
+                .HasColumnType("nvarchar(max)");
+        });
+        
+        modelBuilder.Entity<Device>()
+            .Ignore(d => d.Type);
     }
 }
