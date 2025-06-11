@@ -19,10 +19,12 @@ namespace Tutorial11.Controllers
     public class DevicesController : ControllerBase
     {
         private readonly DeviceContext _context;
+        private readonly ILogger<DevicesController> _logger;
 
-        public DevicesController(DeviceContext context)
+        public DevicesController(DeviceContext context, ILogger<DevicesController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/Devices
@@ -125,6 +127,7 @@ namespace Tutorial11.Controllers
         [Authorize]
         public async Task<IActionResult> PutDevice(long id, [FromBody] CreateDeviceDto deviceDto, CancellationToken token)
         {
+            _logger.LogInformation("PUT /api/devices/{DeviceId} started", id);
             try
             {
                 var device = await _context.Device
@@ -134,7 +137,10 @@ namespace Tutorial11.Controllers
                     .FirstOrDefaultAsync(d => d.Id == id, token);
 
                 if (device == null)
+                {
+                    _logger.LogWarning("Device with ID {DeviceId} not found", id);
                     return NotFound($"Device with ID {id} not found.");
+                }
 
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -144,7 +150,10 @@ namespace Tutorial11.Controllers
                     var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                     if (username == null)
+                    {
+                        _logger.LogWarning("Unauthorized attempt: missing username");
                         return Unauthorized("Invalid account");
+                    }
 
                     var accountUser = await _context.Account
                         .Include(a => a.Employee)
@@ -152,21 +161,30 @@ namespace Tutorial11.Controllers
                         .FirstOrDefaultAsync(a => a.Username == username);
 
                     if (accountUser == null)
+                    {
+                        _logger.LogWarning("Unauthorized attempt: account not found for user {Username}", username);
                         return Unauthorized("Invalid account");
-                    
+                    }
+
 
                     bool isAssigned = device.DeviceEmployees.Any(de =>
                         de.EmployeeId == accountUser.EmployeeId && de.ReturnDate == null);
 
                     if (!isAssigned)
+                    {
+                        _logger.LogWarning("User {Username} not authorized to access device {DeviceId}", username, id);
                         return Unauthorized("You are not authorized to access this device.");
+                    }
                 }
 
                 var deviceType = await _context.DeviceType
                     .FirstOrDefaultAsync(dt => dt.Name == deviceDto.Type, token);
 
                 if (deviceType == null)
+                {
+                    _logger.LogWarning("DeviceType '{DeviceType}' not found", deviceDto.Type);
                     return NotFound("DeviceType not found.");
+                }
 
                 device.Name = deviceDto.Name;
                 device.IsEnabled = deviceDto.IsEnabled;
@@ -174,14 +192,16 @@ namespace Tutorial11.Controllers
                     JsonSerializer.Serialize(deviceDto.AdditionalProperties)
                 ) ?? new Dictionary<string, object>();
                 device.DeviceTypeId = deviceType.Id;
-
+                
                 _context.Device.Update(device);
                 await _context.SaveChangesAsync(token);
-
+                
+                _logger.LogInformation("Device {DeviceId} updated successfully", id);
                 return NoContent();
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while updating device {DeviceId}", id);
                 return Problem(detail: ex.Message, title: "Cannot update device", instance: $"api/devices/{id}");
             }
         }
@@ -192,6 +212,7 @@ namespace Tutorial11.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PostDevice([FromBody] CreateDeviceDto deviceDto, CancellationToken token)
         {
+            _logger.LogInformation("POST /api/devices started");
             try
             {
                 var deviceType = await _context.DeviceType
@@ -199,6 +220,7 @@ namespace Tutorial11.Controllers
 
                 if (deviceType == null)
                 {
+                    _logger.LogWarning("DeviceType '{DeviceType}' not found", deviceDto.Type);
                     return NotFound("DeviceType not found.");
                 }
 
@@ -214,11 +236,13 @@ namespace Tutorial11.Controllers
 
                 await _context.Device.AddAsync(newDevice, token);
                 await _context.SaveChangesAsync(token);
-
+                
+                _logger.LogInformation("New device created with ID {DeviceId}", newDevice.Id);
                 return CreatedAtAction(nameof(GetDevice), new { id = newDevice.Id }, newDevice);
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while creating a new device");
                 return Problem(detail: ex.Message, title: "Cannot create new device", instance: "api/devices");
             }
         }

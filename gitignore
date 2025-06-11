@@ -28,3 +28,12 @@ Tutorial11/obj/Debug/
 **/obj/
 **/bin/
 Tutorial11.http
+.idea/
+.idea/
+.idea/.idea.Tutorial11/.idea/indexLayout.xml
+.idea/
+Tutorial11/appsettings*.json
+Tutorial11/bin/
+Tutorial11/obj/
+Tutorial11/Tutorial11.http
+
